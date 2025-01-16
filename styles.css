@@ -1,0 +1,99 @@
+@font-face {
+    font-family: 'Ioveska Regular';
+    src: url("Iosevka.woff2");
+}
+
+:root {
+    --fontsize: 1.3rem;
+    
+    --base: #303446;
+    --text: #c6d0f5;
+    --lavender: #babbf1;
+    --blue: #8caaee;
+    --saphire: #85c1dc;
+    --sky: #99d1db;
+    --teal: #81c8be;
+    --green: #a6d189;
+    --yellow: #e5c890;
+    --peach: #ef9f76;
+    --maroon: #ea999c;
+    --red: #e78284;
+    --mauve: #ca9ee6;
+    --pink: #f4b8e4;
+    --flamingo: #eebebe;
+    --rosewater: #f2d5cf;
+    --white: #fff;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    background-color: var(--base);
+    color: var(--text);
+    font-size: var(--fontsize);
+    font-family: 'Ioveska Regular';
+}
+
+a {
+    color: var(--text);
+    text-decoration: underline;
+}
+
+body {
+    font-size: var(--fontsize);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blue {
+    color: var(--blue);
+}
+
+.teal {
+    color: var(--teal);
+}
+
+.green {
+    color: var(--green);
+}
+
+.sky {
+    color: var(--sky);
+}
+
+.white {
+    color: var(--white);
+}
+
+.yellow {
+    color: var(--yellow);
+}
+
+.bold {
+    font-weight: bold;
+}
+
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+.write {
+    font-size: var(--fontsize);
+    border: none;
+    cursor: default;
+}
+
+.terminal {
+    padding: 20px;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    border: solid var(--peach) 3px;
+    overflow: hidden;
+}
