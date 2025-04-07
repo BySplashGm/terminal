@@ -81,9 +81,8 @@ Or simply double-click on `index.html` to launch it locally.
 
 ---
 
-## 🙏 Credits
+## 💌 Contact
 
-Created by [Maxime Valin](https://github.com/MaximeValin)  
 📧 [contact@maximeval.in](mailto:contact@maximeval.in)  
 🌐 [https://terminal.maximeval.in](https://terminal.maximeval.in)
 
