@@ -13,7 +13,6 @@
 - [Available Commands](#available-commands)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
-- [Preview](#preview)
 - [Credits](#credits)
 - [License](#license)
 
@@ -72,12 +71,6 @@ cd terminal-portfolio
 open index.html
 ```
 Or simply double-click on `index.html` to launch it locally.
-
----
-
-## 🖼️ Preview
-
-*(Add screenshots or a GIF demo here)*
 
 ---
 
