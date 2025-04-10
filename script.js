@@ -310,7 +310,7 @@ document.getElementById("writeform").addEventListener("submit", function (e) {
         return;
     }
 
-    if (cmd === "gui") {
+    if (cmd === "gui" || cmd === "portfolio" || cmd === "website") {
         window.open("https://maximeval.in", "_blank");
     }
 
