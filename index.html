@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="styles.css">
     <title>Terminal</title>
     <meta name="description" content="Welcome to my Terminal Portfolio.">
     <meta content="NOINDEX, NOFOLLOW" name="robots">
@@ -28,22 +28,23 @@
             <p class="yellow" style="white-space: pre-wrap">╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚══════╝</p>
             <p>Type 'help' to see the list of available commands.</p>
             <p>Type 'sumfetch' to display summary.</p>
-            <p>Type 'gui' or click <a href="#">here</a> for a simpler version.</p>
+            <p>Type 'gui' or click <a href="https://maximeval.in">here</a> for a simpler version.</p>
             <p style="white-space: pre-wrap"> </p>
-            <p>⚠️ This project is not finished. You might encounter some errors or miss some features.</p>
         </ul>
 
         <form id="writeform">
             <p><span class="green">┌──(</span><span class="blue bold">guest@maximeval.in</span><span class="green">)-[</span><span class="white bold">~</span><span class="green">]</span></p>
             <div style="display: flex;">
                 <p style="white-space: pre-wrap"><span class="green">└─</span><span class="blue">$</span> </p>
-                <label style="display: none;" for="writebar">Type a command</label>
-                <input list="commands" id="write" class="write" name="writebar" onblur="this.focus()" autofocus>
-            </div>
+                <div class="ghost-wrapper">
+                  <span id="ghost" class="ghost"></span>
+                  <input id="write" class="write" name="writebar" onblur="this.focus()" autofocus autocomplete="off">
+                </div>
+              </div>                            
         </form>
     </div>
 
     
-    <script src="script.min.js"></script> 
+    <script src="script.js"></script> 
 </body>
 </html>

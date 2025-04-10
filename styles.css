@@ -85,6 +85,7 @@ textarea:focus, input:focus{
     font-size: var(--fontsize);
     border: none;
     cursor: default;
+    width: 100%;
 }
 
 .terminal {
@@ -96,4 +97,36 @@ textarea:focus, input:focus{
     justify-content: end;
     border: solid var(--peach) 3px;
     overflow: hidden;
+}
+
+.ghost-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.ghost {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--sky);
+    opacity: 0.3;
+    pointer-events: none;
+    font-family: 'Ioveska Regular';
+    font-size: var(--fontsize);
+    white-space: pre;
+}
+
+.write {
+    font-size: var(--fontsize);
+    border: none;
+    cursor: default;
+    width: 100%;
+    background: transparent;
+    position: relative;
+    color: var(--text);
+    z-index: 1;
+}
+
+.write.invalid {
+    color: var(--red);
 }

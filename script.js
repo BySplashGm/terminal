@@ -1,16 +1,16 @@
 const container = document.getElementById("console");
 const template = document.getElementById("linetemplate");
-const commandLine = document.getElementById('write');
+const commandLine = document.getElementById("write");
+const ghost = document.getElementById("ghost");
 
 function keepFocus() {
     commandLine.focus();
 }
 
-document.getElementById('body').addEventListener('click', keepFocus);
+document.getElementById("body").addEventListener("click", keepFocus);
+commandLine.addEventListener("blur", keepFocus);
 
-commandLine.addEventListener('blur', keepFocus);
-
-commands = {
+const commands = {
     "sudo": {
         aliases: [],
         description: "use super user powers",
@@ -21,7 +21,7 @@ commands = {
         aliases: ["portfolio", "website"],
         description: "get to the Graphical User Interface version",
         usage: "gui",
-        result: [`<p>The gui version of my portfolio is still under construction...</p>`]
+        result: [`<p>Opening a new tab...</p>`]
     },
     "cd": {
         aliases: [],
@@ -88,9 +88,8 @@ commands = {
             `<p> </p>`,
             `<p>Type 'help' to see the list of available commands.</p>`,
             `<p>Type 'sumfetch' to display summary.</p>`,
-            `<p>Type 'gui' or click <a>here</a> for a simpler version.</p>`,
+            `<p>Type 'gui' or click <a href="https://maximeval.in">here</a> for a simpler version.</p>`,
             `<p> </p>`,
-            `<p>⚠️ This project is not finished. You might encounter some errors or miss some features.</p>`,
         ]
     },
     "sumfetch": {
@@ -105,15 +104,15 @@ commands = {
             `<p>           .';;;:::;,,.x,                          ❓ ABOUT<br></p>`,
             `<p>      ..'''.            0Xxoc:,.  ...              🪪 Maxime Valin<br></p>`,
             `<p>  ....                ,ONkc;,;cokOdc',.            💻 Computer Science Student<br></p>`,
-            `<p> .                   OMo           ':ddo.          📜 <a href="#">resume</a><br></p>`,
-            `<p>                    dMc               :OO;         🌐 //TODO<br></p>`,
+            `<p> .                   OMo           ':ddo.          📜 <a href="https://maximeval.in/about">resume</a><br></p>`,
+            `<p>                    dMc               :OO;         🌐 <a href="https://maximeval.in">GUI Portfolio</a><br></p>`,
             `<p>                    0M.                 .:o.       -----------<br></p>`,
             `<p>                    ;Wd                            💌 CONTACT<br></p>`,
             `<p>                     ;XO,                          🟦 <a href="https://linkedin.com/in/maximevalin">linkedin.com/in/maximevalin</a><br></p>`,
             `<p>                       ,d0Odlc;,..                 📫 <a href="mailto:contact@maximeval.in">contact@maximeval.in</a><br></p>`,
             `<p>                           ..',;:cdOOd::,.         🤖 <a href="https://github.com/MaximeValin">github.com/MaximeValin</a><br></p>`,
-            `<p>                                    .:d;.':;.      -----------<br></p>`,
-            `<p>                                       'd,  .'     //TODO<br></p>`,
+            `<p>                                    .:d;.':;.      🌐 <a href="https://maximeval.in/contact">https://maximeval.in/contact<br></p>`,
+            `<p>                                       'd,  .'     -----------<br></p>`,
             `<p>                                         ;l   ..   <br></p>`,
             `<p>                                          .o       <br></p>`,
             `<p>                                            c<br></p>`,
@@ -128,18 +127,35 @@ commands = {
         result: [
             `<p>The list is under creation... Be patient :)</p>`
         ]
+    },
+    "man" : {
+        aliases: [],
+        description: "an interface to the system reference manuals",
+        usage: "man < command_name >",
+        result: []
+    },
+    "clear" : {
+        aliases: [],
+        description: "clear the terminal screen",
+        usage: "clear",
+        result: []
+    },
+    "echo" : {
+        aliases: [],
+        description: "repeat something",
+        usage: "echo < text >",
+        result: []
     }
 };
 
-cmdList = [];
-for (const [key, value] of Object.entries(commands)) {
-    cmdList.push(key);
-    for (i = 0; i < value["aliases"].length; i++) {
-        cmdList.push(value["aliases"][i]);
-    }
+const cmdSet = new Set();
+for (const [name, cmd] of Object.entries(commands)) {
+    cmdSet.add(name);
+    cmd.aliases.forEach(alias => cmdSet.add(alias));
 }
-cmdList.push("clear", "help", "man");
-cmdList.sort();
+cmdSet.add("help");
+
+const cmdList = Array.from(cmdSet).sort();
 
 cmdListString = "";
 
@@ -163,78 +179,153 @@ commands["help"] = {
     ]
 }
 
-commands["man"] = {
-    aliases: [],
-    description: "an interface to the system reference manuals",
-    usage: "man < command_name >",
-    result: []
+let commandHistory = [];
+let historyIndex = -1;
+
+commandLine.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") {
+        if (historyIndex > 0) {
+            historyIndex--;
+            commandLine.value = commandHistory[historyIndex];
+        } else if (historyIndex === 0) {
+            commandLine.value = commandHistory[0];
+        }
+    } else if (e.key === "ArrowDown") {
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            commandLine.value = commandHistory[historyIndex];
+        } else {
+            historyIndex = commandHistory.length;
+            commandLine.value = "";
+        }
+    }
+});
+
+commandLine.addEventListener("input", () => {
+    const value = commandLine.value.toLowerCase();
+    if (value === "") {
+        ghost.textContent = "";
+        commandLine.classList.remove("invalid");
+        return;
+    }
+
+    const [first] = value.split(" ");
+    const match = cmdList.find(cmd => cmd.startsWith(first));
+    if (match) {
+        ghost.textContent = match;
+        commandLine.classList.remove("invalid");
+    } else {
+        ghost.textContent = value;
+        commandLine.classList.add("invalid");
+    }
+});
+
+commandLine.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+        e.preventDefault();
+        const value = commandLine.value.toLowerCase();
+        const [first] = commandLine.value.toLowerCase().split(" ");
+        const match = cmdList.find(cmd => cmd.startsWith(first));
+        
+        if (match) {
+            commandLine.value = match;
+            ghost.textContent = "";
+        }
+    }
+});
+
+
+function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, function (m) {
+        return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;',
+        })[m];
+    });
 }
 
-commands["clear"] = {
-    aliases: [],
-    description: "clear the terminal screen",
-    usage: "clear",
-    result: []
-}
 
 document.getElementById("writeform").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    var prompt = document.getElementById('write').value;
-    document.getElementById('write').value = "";
+    const prompt = commandLine.value;
+    if (prompt.trim() !== "") {
+        commandHistory.push(prompt);
+        historyIndex = commandHistory.length;
+    }
+    commandLine.value = "";
+    ghost.textContent = "";
+    commandLine.classList.remove("invalid");
+
     const clone = template.content.cloneNode(true);
+    const linecmd = clone.getElementById("linecmd");
+    const lineres = clone.getElementById("lineres");
 
-    
-    let linecmd = clone.getElementById("linecmd");
-    linecmd.innerHTML = prompt;
-    let lineres = clone.getElementById("lineres");
+    linecmd.innerHTML = escapeHTML(prompt);
 
-    promptSplit = prompt.split(' ');
+    const promptSplit = prompt.trim().split(/\s+/);
+    const cmd = promptSplit[0].toLowerCase();
+    const arg = promptSplit[1] ? promptSplit[1].toLowerCase() : null;
 
-    cmd = promptSplit[0].toLowerCase();
+    if (cmd === "clear") {
+        container.innerHTML = "";
+        return;
+    }
 
-    if (cmd == "clear") {
-        container.innerHTML = '';
-    } else if (cmd == "man") {
-
-        if (promptSplit[1]) {
-            arg = promptSplit[1].toLowerCase();
-            if (cmdList.includes(arg)) {
-                for (const [name, details] of Object.entries(commands)) {
-                    if (name == arg || details["aliases"].includes(arg)) {
-                        
-                        lineres.innerHTML += "<p class='bold'>NAME</p>";
-                        lineres.innerHTML += "<p>" + arg + " - " + details["description"] + "</p>";
-                        lineres.innerHTML += "<p class='bold'>ALIAS" + (details["aliases"].length == 1 ? "" : "ES") + "</p>";
-                        lineres.innerHTML += "<p>" + (details["aliases"].length != 0 ? details["aliases"] : "None") + "</p>";
-                        lineres.innerHTML += "<p class='bold'>USAGE</p>";
-                        lineres.innerHTML += "<p>" + details["usage"] + "</p>";
-    
-                    }
-                }
+    if (cmd === "man") {
+        if (arg) {
+            const matchedCmd = Object.entries(commands).find(([name, details]) =>
+                name === arg || details.aliases.includes(arg)
+            );
+            if (matchedCmd) {
+                const [name, details] = matchedCmd;
+                lineres.innerHTML += "<p class='bold'>NAME</p>";
+                lineres.innerHTML += `<p>${name} - ${details.description}</p>`;
+                lineres.innerHTML += `<p class='bold'>ALIAS${details.aliases.length === 1 ? "" : "ES"}</p>`;
+                lineres.innerHTML += `<p>${details.aliases.length ? details.aliases.join(", ") : "None"}</p>`;
+                lineres.innerHTML += "<p class='bold'>USAGE</p>";
+                lineres.innerHTML += `<p>${details.usage}</p>`;
             } else {
-                lineres.innerHTML = "[MAN] Unknown command: '" + cmd + "' Type 'help' to see all available commands.";
+                lineres.innerHTML = `[MAN] Unknown command: '${arg}'. Type 'help' to see all available commands.`;
             }
-            
         } else {
             lineres.innerHTML += "<p>What manual page do you want?</p>";
             lineres.innerHTML += "<p>For example, try 'man man'.</p>";
         }
-        
-        container.append(clone);
 
-    } else {
-        if (cmdList.includes(cmd)) {
-            for (const [name, details] of Object.entries(commands)) {
-                if (name == cmd || details["aliases"].includes(cmd)) {
-                    for (i = 0; i < details["result"].length; i++) {
-                        lineres.innerHTML += details["result"][i];
-                    }
-                }
-            }
-        } else if (cmd != "") {
-            lineres.innerHTML = "Unknown command: '" + cmd + "'. Type 'help' to see all available commands.";
-        }
         container.append(clone);
+        return;
     }
+
+    if (cmd === "help") {
+        const helpCmd = commands["help"];
+        helpCmd.result.forEach(r => lineres.innerHTML += r);
+        container.append(clone);
+        return;
+    }
+
+    if (cmd === "echo") {
+        const msg = promptSplit.slice(1).join(" ");
+        lineres.innerHTML = escapeHTML(msg);
+        container.append(clone);
+        return;
+    }
+
+    // Si commande valide
+    if (cmdList.includes(cmd)) {
+        const matched = Object.entries(commands).find(([name, details]) =>
+            name === cmd || details.aliases.includes(cmd)
+        );
+        if (matched) {
+            matched[1].result.forEach(r => lineres.innerHTML += r);
+        }
+    } else if (cmd !== "") {
+        lineres.innerHTML = `Unknown command: '${cmd}'. Type 'help' to see all available commands.`;
+    }
+
+    container.append(clone);
+    container.scrollTop = container.scrollHeight;
 });
