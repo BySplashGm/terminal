@@ -21,7 +21,7 @@ const commands = {
         aliases: ["portfolio", "website"],
         description: "get to the Graphical User Interface version",
         usage: "gui",
-        result: [`<p>Opening a new tab...</p>`]
+        result: [`<p>Opening <a href="https://maximeval.in" target="_blank">https://maximeval.in</a>...</p>`]
     },
     "cd": {
         aliases: [],
@@ -88,7 +88,7 @@ const commands = {
             `<p> </p>`,
             `<p>Type 'help' to see the list of available commands.</p>`,
             `<p>Type 'sumfetch' to display summary.</p>`,
-            `<p>Type 'gui' or click <a href="https://maximeval.in">here</a> for a simpler version.</p>`,
+            `<p>Type 'gui' or click <a href="https://maximeval.in" target="_blank">here</a> for a simpler version.</p>`,
             `<p> </p>`,
         ]
     },
@@ -104,14 +104,14 @@ const commands = {
             `<p>           .';;;:::;,,.x,                          ❓ ABOUT<br></p>`,
             `<p>      ..'''.            0Xxoc:,.  ...              🪪 Maxime Valin<br></p>`,
             `<p>  ....                ,ONkc;,;cokOdc',.            💻 Computer Science Student<br></p>`,
-            `<p> .                   OMo           ':ddo.          📜 <a href="https://maximeval.in/about">resume</a><br></p>`,
-            `<p>                    dMc               :OO;         🌐 <a href="https://maximeval.in">GUI Portfolio</a><br></p>`,
+            `<p> .                   OMo           ':ddo.          📜 <a href="https://maximeval.in/about" target="_blank">resume</a><br></p>`,
+            `<p>                    dMc               :OO;         🌐 <a href="https://maximeval.in" target="_blank">GUI Portfolio</a><br></p>`,
             `<p>                    0M.                 .:o.       -----------<br></p>`,
             `<p>                    ;Wd                            💌 CONTACT<br></p>`,
-            `<p>                     ;XO,                          🟦 <a href="https://linkedin.com/in/maximevalin">linkedin.com/in/maximevalin</a><br></p>`,
-            `<p>                       ,d0Odlc;,..                 📫 <a href="mailto:contact@maximeval.in">contact@maximeval.in</a><br></p>`,
-            `<p>                           ..',;:cdOOd::,.         🤖 <a href="https://github.com/MaximeValin">github.com/MaximeValin</a><br></p>`,
-            `<p>                                    .:d;.':;.      🌐 <a href="https://maximeval.in/contact">https://maximeval.in/contact<br></p>`,
+            `<p>                     ;XO,                          🟦 <a href="https://linkedin.com/in/maximevalin" target="_blank">linkedin.com/in/maximevalin</a><br></p>`,
+            `<p>                       ,d0Odlc;,..                 📫 <a href="mailto:contact@maximeval.in" target="_blank">contact@maximeval.in</a><br></p>`,
+            `<p>                           ..',;:cdOOd::,.         🤖 <a href="https://github.com/MaximeValin" target="_blank">github.com/MaximeValin</a><br></p>`,
+            `<p>                                    .:d;.':;.      🌐 <a href="https://maximeval.in/contact" target="_blank">https://maximeval.in/contact<br></p>`,
             `<p>                                       'd,  .'     -----------<br></p>`,
             `<p>                                         ;l   ..   <br></p>`,
             `<p>                                          .o       <br></p>`,
@@ -145,7 +145,18 @@ const commands = {
         description: "repeat something",
         usage: "echo < text >",
         result: []
-    }
+    },
+    "contact": {
+        aliases: ["email", "linkedin", "github"],
+        description: "how to reach me",
+        usage: "contact",
+        result: [
+            `<p>📫 <a href="mailto:contact@maximeval.in" target="_blank">contact@maximeval.in</a></p>`,
+            `<p>🟦 <a href="https://linkedin.com/in/maximevalin" target="_blank">linkedin.com/in/maximevalin</a></p>`,
+            `<p>🤖 <a href="https://github.com/MaximeValin" target="_blank">github.com/MaximeValin</a></p>`
+        ]
+    },
+
 };
 
 const cmdSet = new Set();
@@ -203,15 +214,13 @@ commandLine.addEventListener("keydown", (e) => {
 
 commandLine.addEventListener("input", () => {
     const value = commandLine.value.toLowerCase();
+    const [first] = value.split(" ");
+    const match = cmdList.find(cmd => cmd.startsWith(first));
+
     if (value === "") {
         ghost.textContent = "";
         commandLine.classList.remove("invalid");
-        return;
-    }
-
-    const [first] = value.split(" ");
-    const match = cmdList.find(cmd => cmd.startsWith(first));
-    if (match) {
+    } else if (match) {
         ghost.textContent = match;
         commandLine.classList.remove("invalid");
     } else {
@@ -219,6 +228,7 @@ commandLine.addEventListener("input", () => {
         commandLine.classList.add("invalid");
     }
 });
+
 
 commandLine.addEventListener("keydown", (e) => {
     if (e.key === "Tab") {
@@ -298,6 +308,10 @@ document.getElementById("writeform").addEventListener("submit", function (e) {
 
         container.append(clone);
         return;
+    }
+
+    if (cmd === "gui") {
+        window.open("https://maximeval.in", "_blank");
     }
 
     if (cmd === "help") {
